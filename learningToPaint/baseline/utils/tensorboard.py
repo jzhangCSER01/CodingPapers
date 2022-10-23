@@ -4,7 +4,7 @@
 
 
 from PIL import Image
-import scipy.misc
+import numpy as np
 from io import BytesIO
 import tensorboardX as tb
 from tensorboardX.summary import Summary
@@ -17,13 +17,14 @@ class TensorBoard(object):
     def add_image(self, tag, img, step):
         summary = Summary()
         bio = BytesIO()
+        img = img.astype(np.uint8)
 
         if type(img) == str:
             img = Image.open(img)
         elif type(img) == Image.Image:
             pass
         else:
-            img = scipy.misc.toimage(img)
+            img = Image.fromarray(img)
 
         img.save(bio, format='png')
         image_summary = Summary.Image(encoded_image_string = bio.getvalue())
